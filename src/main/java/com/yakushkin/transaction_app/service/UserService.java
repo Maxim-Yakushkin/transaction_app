@@ -2,13 +2,13 @@ package com.yakushkin.transaction_app.service;
 
 import com.yakushkin.transaction_app.entity.User;
 import com.yakushkin.transaction_app.repository.UserRepository;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Data
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;

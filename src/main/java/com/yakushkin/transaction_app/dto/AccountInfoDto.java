@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AccountInfoDto {
 
     private Integer id;
+    private Integer userId;
     private Integer balance;
     private String currency;
 }

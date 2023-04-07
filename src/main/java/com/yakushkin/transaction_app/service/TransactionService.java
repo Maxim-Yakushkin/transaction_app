@@ -15,6 +15,10 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
 
     public Transaction save(Transaction transaction) {
+        if (Math.abs(transaction.getAmount()) > 100000000) {
+            return null;
+        }
+
         return transactionRepository.save(transaction);
     }
 

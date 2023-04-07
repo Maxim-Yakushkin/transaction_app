@@ -16,8 +16,10 @@ import java.util.Scanner;
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private final Scanner scanner = new Scanner(System.in);
+    private static final String PLUS = "+";
+    private static final String MINUS = "-";
 
+    private final Scanner scanner = new Scanner(System.in);
     private final TransactionService transactionService;
     private final AccountService accountService;
     private final UserService userService;
@@ -36,21 +38,23 @@ public class TransactionController {
         switch (selectedTransactionType) {
             case INCOME -> {
                 final Integer amount = inputTransactionAmount();
-                final Account updatedAccount = accountService.addIncome(selectedAccountId, amount);
+                final Account updatedAccount = accountService.updateBalance(selectedAccountId, amount, PLUS);
                 final Transaction transaction = Transaction.builder()
                         .account(updatedAccount)
                         .amount(amount)
                         .build();
-                transactionService.save(transaction);
+                Transaction savedTransaction = transactionService.save(transaction);
+                System.out.println("Transaction is saved: " + savedTransaction);
             }
             case EXPENSE -> {
                 final Integer amount = inputTransactionAmount();
-                final Account updatedAccount = accountService.addExpense(selectedAccountId, amount);
+                final Account updatedAccount = accountService.updateBalance(selectedAccountId, amount, MINUS);
                 final Transaction transaction = Transaction.builder()
                         .account(updatedAccount)
                         .amount(-amount)
                         .build();
-                transactionService.save(transaction);
+                Transaction savedTransaction = transactionService.save(transaction);
+                System.out.println("Transaction is saved: " + savedTransaction);
             }
         }
     }
@@ -62,7 +66,7 @@ public class TransactionController {
 
     private TransactionType getSelectedTransactionType() {
         System.out.println("Please select transaction type:");
-        TransactionType[] transactionTypes = TransactionType.values();
+        final TransactionType[] transactionTypes = TransactionType.values();
         Arrays.stream(transactionTypes).
                 map(transactionType -> String.format("%d. %s", transactionType.ordinal(), transactionType.name()))
                 .forEach(System.out::println);

@@ -22,13 +22,5 @@ public class TransactionApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("----- All Users -----");
-        userService.findAll().forEach(System.out::println);
-
-        System.out.println("----- All Accounts -----");
-        accountService.findAll().forEach(System.out::println);
-
-        System.out.println("----- All Transactions -----");
-        transactionService.findAll().forEach(System.out::println);
     }
 }

@@ -43,7 +43,7 @@ public class TransactionController {
                         .account(updatedAccount)
                         .amount(amount)
                         .build();
-                Transaction savedTransaction = transactionService.save(transaction);
+                final Transaction savedTransaction = transactionService.save(transaction);
                 System.out.println("Transaction is saved: " + savedTransaction);
             }
             case EXPENSE -> {
@@ -53,7 +53,7 @@ public class TransactionController {
                         .account(updatedAccount)
                         .amount(-amount)
                         .build();
-                Transaction savedTransaction = transactionService.save(transaction);
+                final Transaction savedTransaction = transactionService.save(transaction);
                 System.out.println("Transaction is saved: " + savedTransaction);
             }
         }

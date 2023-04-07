@@ -92,6 +92,10 @@ public class AccountService implements FilterAccountRepository {
 
         final Account account = accountRepository.findById(accountId).orElseGet(Account::new);
 
+        if ((account.getBalance() - amount) < 0 || account.getBalance() + amount > 2000000000) {
+            return null;
+        }
+
         Account updatedAccount = new Account();
         if (account.getId() != null) {
             if (operator.equals("-")) {

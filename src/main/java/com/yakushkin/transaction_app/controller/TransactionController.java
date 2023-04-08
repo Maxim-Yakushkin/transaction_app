@@ -3,6 +3,8 @@ package com.yakushkin.transaction_app.controller;
 import com.yakushkin.transaction_app.entity.Account;
 import com.yakushkin.transaction_app.entity.Transaction;
 import com.yakushkin.transaction_app.entity.TransactionType;
+import com.yakushkin.transaction_app.exception.AccountBalanceLimitException;
+import com.yakushkin.transaction_app.exception.TransactionLimitException;
 import com.yakushkin.transaction_app.helper.MessageHelper;
 import com.yakushkin.transaction_app.service.AccountService;
 import com.yakushkin.transaction_app.service.TransactionService;
@@ -40,17 +42,29 @@ public class TransactionController {
         switch (selectedTransactionType) {
             case INCOME -> {
                 final Integer amount = inputTransactionAmount();
-                final Account updatedAccount = accountService.updateBalance(selectedAccountId, amount, PLUS);
-                final Transaction transaction = buildTransaction(amount, updatedAccount);
-                final Transaction savedTransaction = transactionService.save(transaction);
-                System.out.println(MessageHelper.TRANSACTION_SAVED_MESSAGE + savedTransaction);
+                final Account updatedAccount;
+                try {
+                    updatedAccount = accountService.updateBalance(selectedAccountId, amount, PLUS);
+                    final Transaction transaction = buildTransaction(amount, updatedAccount);
+                    final Transaction savedTransaction = transactionService.save(transaction);
+                    System.out.println(MessageHelper.TRANSACTION_SAVED_MESSAGE + savedTransaction);
+                } catch (TransactionLimitException | AccountBalanceLimitException e) {
+                    System.out.println(e.getMessage());
+                    createTransaction();
+                }
             }
             case EXPENSE -> {
                 final Integer amount = inputTransactionAmount();
-                final Account updatedAccount = accountService.updateBalance(selectedAccountId, amount, MINUS);
-                final Transaction transaction = buildTransaction(-amount, updatedAccount);
-                final Transaction savedTransaction = transactionService.save(transaction);
-                System.out.println(MessageHelper.TRANSACTION_SAVED_MESSAGE + savedTransaction);
+                final Account updatedAccount;
+                try {
+                    updatedAccount = accountService.updateBalance(selectedAccountId, amount, MINUS);
+                    final Transaction transaction = buildTransaction(-amount, updatedAccount);
+                    final Transaction savedTransaction = transactionService.save(transaction);
+                    System.out.println(MessageHelper.TRANSACTION_SAVED_MESSAGE + savedTransaction);
+                } catch (TransactionLimitException | AccountBalanceLimitException e) {
+                    System.out.println(e.getMessage());
+                    createTransaction();
+                }
             }
         }
     }

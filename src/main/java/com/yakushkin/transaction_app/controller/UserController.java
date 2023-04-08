@@ -17,14 +17,11 @@ public class UserController {
     private static final Scanner SCANNER = Util.SCANNER;
     private final UserService userService;
 
-    public void registration() throws EmptyUsernameException {
+    public void registration() {
         System.out.println(MessageHelper.REGISTRATION_USER_HEADER);
 
         System.out.print(MessageHelper.INPUT_USERNAME_MESSAGE);
         final String userName = SCANNER.nextLine();
-        if (userName.isEmpty() || userName.isBlank()) {
-            throw new EmptyUsernameException();
-        }
         System.out.print(MessageHelper.INPUT_USER_ADDRESS_MESSAGE);
         final String userAddress = SCANNER.nextLine();
 
@@ -32,7 +29,11 @@ public class UserController {
                 .name(userName)
                 .address(userAddress)
                 .build();
-
-        userService.create(user);
+        try {
+            userService.create(user);
+        } catch (EmptyUsernameException e) {
+            System.out.println(e.getMessage());
+            registration();
+        }
     }
 }

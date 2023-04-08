@@ -2,7 +2,9 @@ package com.yakushkin.transaction_app.service;
 
 import com.yakushkin.transaction_app.dto.AccountInfoDto;
 import com.yakushkin.transaction_app.entity.Account;
+import com.yakushkin.transaction_app.exception.AccountBalanceLimitException;
 import com.yakushkin.transaction_app.exception.CurrencyAccountExistException;
+import com.yakushkin.transaction_app.exception.TransactionLimitException;
 import com.yakushkin.transaction_app.repository.AccountRepository;
 import com.yakushkin.transaction_app.repository.FilterAccountRepository;
 import com.yakushkin.transaction_app.sql.AccountSqlQuery;
@@ -70,15 +72,16 @@ public class AccountService implements FilterAccountRepository {
                 userId);
     }
 
-    public Account updateBalance(Integer accountId, Integer amount, String operator) {
+    public Account updateBalance(Integer accountId, Integer amount, String operator) throws TransactionLimitException, AccountBalanceLimitException {
         if (amount > TRANSACTION_LIMIT) {
-            return null;
+            throw new TransactionLimitException();
         }
 
         final Account account = accountRepository.findById(accountId).orElseGet(Account::new);
 
-        if ((account.getBalance() - amount) < ACCOUNT_BALANCE_MIN || account.getBalance() + amount > ACCOUNT_BALANCE_MAX) {
-            return null;
+        if (operator.equals("-") && (account.getBalance() - amount) < ACCOUNT_BALANCE_MIN ||
+            operator.equals("+") && (account.getBalance() + amount > ACCOUNT_BALANCE_MAX)) {
+            throw new AccountBalanceLimitException();
         }
 
         Account updatedAccount = new Account();

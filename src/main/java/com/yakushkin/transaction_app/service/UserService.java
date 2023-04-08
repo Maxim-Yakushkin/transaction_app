@@ -1,6 +1,7 @@
 package com.yakushkin.transaction_app.service;
 
 import com.yakushkin.transaction_app.entity.User;
+import com.yakushkin.transaction_app.exception.EmptyUsernameException;
 import com.yakushkin.transaction_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,10 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User create(User user) {
+    public User create(User user) throws EmptyUsernameException {
+        if (user.getName().isEmpty() || user.getName().isBlank()) {
+            throw new EmptyUsernameException();
+        }
         return userRepository.save(user);
     }
 

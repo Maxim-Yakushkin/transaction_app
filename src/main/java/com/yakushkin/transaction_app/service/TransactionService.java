@@ -1,6 +1,7 @@
 package com.yakushkin.transaction_app.service;
 
 import com.yakushkin.transaction_app.entity.Transaction;
+import com.yakushkin.transaction_app.exception.TransactionLimitException;
 import com.yakushkin.transaction_app.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,9 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    public Transaction save(Transaction transaction) {
+    public Transaction save(Transaction transaction) throws TransactionLimitException {
         if (Math.abs(transaction.getAmount()) > 100000000) {
-            return null;
+            throw new TransactionLimitException();
         }
 
         return transactionRepository.save(transaction);

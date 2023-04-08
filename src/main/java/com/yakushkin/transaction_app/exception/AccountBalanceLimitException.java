@@ -1,8 +1,10 @@
 package com.yakushkin.transaction_app.exception;
 
+import com.yakushkin.transaction_app.helper.MessageHelper;
+
 public class AccountBalanceLimitException extends Exception {
 
     public AccountBalanceLimitException() {
-        super("The account balance cannot be negative or more than 2000000000");
+        super(MessageHelper.ACCOUNT_BALANCE_LIMIT_MESSAGE);
     }
 }

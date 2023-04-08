@@ -13,6 +13,8 @@ public class MessageHelper {
     public static final String CREATE_TRANSACTION_COMMAND_MESSAGE = "create transaction";
     public static final String USERNAME_SHOULD_PRESENTED_MESSAGE = "The username should be presented";
     public static final String CURRENCY_ACCOUNT_EXIST_MESSAGE = "The account with this currency is exists.";
+    public static final String ACCOUNT_BALANCE_LIMIT_MESSAGE = "The account balance cannot be negative or more than 2000000000";
+    public static final String TRANSACTION_LIMIT_MESSAGE = "The limit for one transaction is 100,000,000";
     public static final String INIT_BALANCE_MESSAGE = "Initial balance: ";
     public static final String AMOUNT_MESSAGE = "Amount: ";
     public static final String TRANSACTION_SAVED_MESSAGE = "Transaction is saved: ";

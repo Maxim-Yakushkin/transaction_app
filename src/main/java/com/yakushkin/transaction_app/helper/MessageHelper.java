@@ -12,7 +12,9 @@ public class MessageHelper {
     public static final String CREATE_ACCOUNT_COMMAND_MESSAGE = "create account";
     public static final String CREATE_TRANSACTION_COMMAND_MESSAGE = "create transaction";
     public static final String USERNAME_SHOULD_PRESENTED_MESSAGE = "The username should be presented";
+    public static final String CURRENCY_ACCOUNT_EXIST_MESSAGE = "The account with this currency is exists.";
     public static final String INIT_BALANCE_MESSAGE = "Initial balance: ";
+    public static final String AMOUNT_MESSAGE = "Amount: ";
     public static final String TRANSACTION_SAVED_MESSAGE = "Transaction is saved: ";
     public static final String SELECT_TRANSACTION_TYPE_MESSAGE = "Please select transaction type:";
     public static final String CREATE_ACCOUNT_HEADER = "===== Create Account =====";

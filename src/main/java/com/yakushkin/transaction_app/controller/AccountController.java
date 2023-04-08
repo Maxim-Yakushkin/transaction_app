@@ -3,6 +3,7 @@ package com.yakushkin.transaction_app.controller;
 import com.yakushkin.transaction_app.entity.Account;
 import com.yakushkin.transaction_app.entity.Currency;
 import com.yakushkin.transaction_app.entity.User;
+import com.yakushkin.transaction_app.exception.CurrencyAccountExistException;
 import com.yakushkin.transaction_app.helper.MessageHelper;
 import com.yakushkin.transaction_app.service.AccountService;
 import com.yakushkin.transaction_app.service.UserService;
@@ -35,7 +36,12 @@ public class AccountController {
                 .balance(initialBalanceValue)
                 .build();
 
-        accountService.create(account);
+        try {
+            accountService.create(account);
+        } catch (CurrencyAccountExistException e) {
+            System.out.println(e.getMessage());
+            createAccount();
+        }
     }
 
     private int initAccountBalance() {

@@ -2,6 +2,7 @@ package com.yakushkin.transaction_app.service;
 
 import com.yakushkin.transaction_app.dto.AccountInfoDto;
 import com.yakushkin.transaction_app.entity.Account;
+import com.yakushkin.transaction_app.exception.CurrencyAccountExistException;
 import com.yakushkin.transaction_app.repository.AccountRepository;
 import com.yakushkin.transaction_app.repository.FilterAccountRepository;
 import com.yakushkin.transaction_app.sql.AccountSqlQuery;
@@ -25,7 +26,7 @@ public class AccountService implements FilterAccountRepository {
     private final AccountRepository accountRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public Account create(Account account) {
+    public Account create(Account account) throws CurrencyAccountExistException {
         final List<AccountInfoDto> existUserAccounts = jdbcTemplate.query(FIND_BY_USER_ID_AND_CURRENCY_SQL,
                 (rs, rowNum) -> AccountInfoDto.builder()
                         .id(rs.getInt("id"))
@@ -35,10 +36,10 @@ public class AccountService implements FilterAccountRepository {
                         .build(),
                 account.getUser().getId(), account.getCurrency());
 
-        if (existUserAccounts.size() == ACCOUNT_BALANCE_MIN) {
+        if (existUserAccounts.size() == 0) {
             return accountRepository.save(account);
         } else {
-            return null;
+            throw new CurrencyAccountExistException();
         }
     }
 

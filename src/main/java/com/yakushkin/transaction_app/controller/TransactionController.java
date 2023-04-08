@@ -63,7 +63,7 @@ public class TransactionController {
     }
 
     private Integer inputTransactionAmount() {
-        System.out.print("Amount: ");
+        System.out.print(MessageHelper.AMOUNT_MESSAGE);
         return Integer.parseInt(SCANNER.nextLine());
     }
 

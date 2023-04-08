@@ -1,6 +1,5 @@
 package com.yakushkin.transaction_app.controller;
 
-import com.yakushkin.transaction_app.exception.EmptyUsernameException;
 import com.yakushkin.transaction_app.helper.CommandHelper;
 import com.yakushkin.transaction_app.helper.MessageHelper;
 import com.yakushkin.transaction_app.util.Util;
@@ -20,7 +19,7 @@ public class MainController {
     private final AccountController accountController;
     private final TransactionController transactionController;
 
-    public void run() throws EmptyUsernameException {
+    public void run() {
         printAllCommands();
 
         final String consoleCommand = SCANNER.nextLine();

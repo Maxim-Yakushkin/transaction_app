@@ -4,7 +4,7 @@ import com.yakushkin.transaction_app.dto.AccountInfoDto;
 import com.yakushkin.transaction_app.entity.Account;
 import com.yakushkin.transaction_app.repository.AccountRepository;
 import com.yakushkin.transaction_app.repository.FilterAccountRepository;
-import com.yakushkin.transaction_app.sql.AccountSql;
+import com.yakushkin.transaction_app.sql.AccountSqlQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -16,36 +16,30 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountService implements FilterAccountRepository {
 
-    private static final String FIND_BY_USER_ID = AccountSql.FIND_BY_USER_ID;
-    private static final String FIND_BY_USER_ID_AND_CURRENCY = AccountSql.FIND_BY_USER_ID_AND_CURRENCY;
+    private static final String FIND_BY_USER_ID_SQL = AccountSqlQuery.FIND_BY_USER_ID;
+    private static final String FIND_BY_USER_ID_AND_CURRENCY_SQL = AccountSqlQuery.FIND_BY_USER_ID_AND_CURRENCY;
+    private static final int TRANSACTION_LIMIT = 100000000;
+    private static final int ACCOUNT_BALANCE_MAX = 2000000000;
+    private static final int ACCOUNT_BALANCE_MIN = 0;
 
     private final AccountRepository accountRepository;
     private final JdbcTemplate jdbcTemplate;
 
     public Account create(Account account) {
-        final List<AccountInfoDto> existUserAccounts = jdbcTemplate.query(FIND_BY_USER_ID_AND_CURRENCY, (rs, rowNum) ->
-                        AccountInfoDto.builder()
-                                .id(rs.getInt("id"))
-                                .userId(rs.getInt("user_id"))
-                                .balance(rs.getInt("balance"))
-                                .currency(rs.getString("currency"))
-                                .build(),
+        final List<AccountInfoDto> existUserAccounts = jdbcTemplate.query(FIND_BY_USER_ID_AND_CURRENCY_SQL,
+                (rs, rowNum) -> AccountInfoDto.builder()
+                        .id(rs.getInt("id"))
+                        .userId(rs.getInt("user_id"))
+                        .balance(rs.getInt("balance"))
+                        .currency(rs.getString("currency"))
+                        .build(),
                 account.getUser().getId(), account.getCurrency());
 
-        if (existUserAccounts.size() == 0) {
+        if (existUserAccounts.size() == ACCOUNT_BALANCE_MIN) {
             return accountRepository.save(account);
         } else {
             return null;
         }
-    }
-
-    public Account findById(Integer accountId) {
-        return accountRepository.findById(accountId)
-                .orElse(new Account());
-    }
-
-    public List<Account> findAllByUserId() {
-        return accountRepository.findAll();
     }
 
     public Optional<Account> update(Account accountForUpdate) {
@@ -63,20 +57,10 @@ public class AccountService implements FilterAccountRepository {
         return Optional.ofNullable(updatedAccount);
     }
 
-    public boolean delete(Integer accountId) {
-        return accountRepository.findById(accountId)
-                .map(account -> {
-                    accountRepository.delete(account);
-                    accountRepository.flush();
-                    return true;
-                })
-                .orElse(false);
-    }
-
     @Override
     public List<AccountInfoDto> findAllAccountsByUserId(Integer userId) {
         return jdbcTemplate.query(
-                FIND_BY_USER_ID,
+                FIND_BY_USER_ID_SQL,
                 (rs, rowNum) -> AccountInfoDto.builder()
                         .id(rs.getInt("id"))
                         .balance(rs.getInt("balance"))
@@ -86,13 +70,13 @@ public class AccountService implements FilterAccountRepository {
     }
 
     public Account updateBalance(Integer accountId, Integer amount, String operator) {
-        if (amount > 100000000) {
+        if (amount > TRANSACTION_LIMIT) {
             return null;
         }
 
         final Account account = accountRepository.findById(accountId).orElseGet(Account::new);
 
-        if ((account.getBalance() - amount) < 0 || account.getBalance() + amount > 2000000000) {
+        if ((account.getBalance() - amount) < ACCOUNT_BALANCE_MIN || account.getBalance() + amount > ACCOUNT_BALANCE_MAX) {
             return null;
         }
 

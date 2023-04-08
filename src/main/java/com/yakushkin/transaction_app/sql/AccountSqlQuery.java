@@ -1,6 +1,6 @@
 package com.yakushkin.transaction_app.sql;
 
-public class AccountSql {
+public class AccountSqlQuery {
 
     public static final String FIND_BY_USER_ID = """
             SELECT

@@ -1,4 +1,9 @@
 -- DDL
+
+drop table if exists user;
+drop table if exists account;
+drop table if exists transactions;
+
 CREATE TABLE user
 (
     id      INTEGER PRIMARY KEY AUTOINCREMENT,

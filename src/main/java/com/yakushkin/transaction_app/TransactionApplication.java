@@ -1,7 +1,6 @@
 package com.yakushkin.transaction_app;
 
 import com.yakushkin.transaction_app.controller.MainController;
-import com.yakushkin.transaction_app.exception.EmptyUsernameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,7 +17,8 @@ public class TransactionApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws EmptyUsernameException {
-        mainController.run();
+    public void run(String... args) {
+        // Need to comment out before running Integration Test (IT) tests
+//        mainController.run();
     }
 }

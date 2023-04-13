@@ -5,6 +5,7 @@ public class AccountSqlQuery {
     public static final String FIND_BY_USER_ID = """
             SELECT
                 id,
+                user_id,
                 balance,
                 currency
             FROM account

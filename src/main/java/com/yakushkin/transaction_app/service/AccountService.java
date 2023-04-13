@@ -66,27 +66,31 @@ public class AccountService implements FilterAccountRepository {
                 FIND_BY_USER_ID_SQL,
                 (rs, rowNum) -> AccountInfoDto.builder()
                         .id(rs.getInt("id"))
+                        .userId(rs.getInt("user_id"))
                         .balance(rs.getInt("balance"))
                         .currency(rs.getString("currency"))
                         .build(),
                 userId);
     }
 
-    public Account updateBalance(Integer accountId, Integer amount, String operator) throws TransactionLimitException, AccountBalanceLimitException {
+    public Account updateBalance(Integer accountId, Integer amount, String transactionTypeOperator) throws
+            TransactionLimitException,
+            AccountBalanceLimitException {
+
         if (amount > TRANSACTION_LIMIT) {
             throw new TransactionLimitException();
         }
 
         final Account account = accountRepository.findById(accountId).orElseGet(Account::new);
 
-        if (operator.equals("-") && (account.getBalance() - amount) < ACCOUNT_BALANCE_MIN ||
-            operator.equals("+") && (account.getBalance() + amount > ACCOUNT_BALANCE_MAX)) {
+        if (transactionTypeOperator.equals("-") && (account.getBalance() - amount) < ACCOUNT_BALANCE_MIN ||
+            transactionTypeOperator.equals("+") && (account.getBalance() + amount > ACCOUNT_BALANCE_MAX)) {
             throw new AccountBalanceLimitException();
         }
 
         Account updatedAccount = new Account();
         if (account.getId() != null) {
-            if (operator.equals("-")) {
+            if (transactionTypeOperator.equals("-")) {
                 account.setBalance(account.getBalance() - amount);
             } else {
                 account.setBalance(account.getBalance() + amount);

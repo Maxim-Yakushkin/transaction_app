@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TransactionService {
 
+    private static final int TRANSACTION_LIMIT = 100000000;
     private final TransactionRepository transactionRepository;
 
     public Transaction save(Transaction transaction) throws TransactionLimitException {
-        if (Math.abs(transaction.getAmount()) > 100000000) {
+        if (Math.abs(transaction.getAmount()) > TRANSACTION_LIMIT) {
             throw new TransactionLimitException();
         }
 

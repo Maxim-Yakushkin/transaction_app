@@ -1,5 +1,4 @@
 -- DDL
-
 drop table if exists user;
 drop table if exists account;
 drop table if exists transactions;
